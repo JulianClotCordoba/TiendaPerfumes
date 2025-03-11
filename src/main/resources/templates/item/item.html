@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="utf-8" />
+        <title>Perfumes Shop</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" th:href="@{/}">Perfumes Shop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Sobre Nosotros</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#!">Todos los productos</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="#!">Populares</a></li>
+                                <li><a class="dropdown-item" href="#!"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Carrito
+                            <span class="badge bg-dark text-white ms-1 rounded-pill" th:text="${cartCount}">0</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <!-- Producto section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6">
+                        <img class="card-img-top mb-5 mb-md-0" th:src="${producto.imagenUrl}"/>
+                    </div>
+                    <div class="col-md-6">
+                        <h1 class="display-5 fw-bolder" th:text="${producto.nombre}"></h1>
+                        <div class="fs-5 mb-5">
+                            <span th:if="${producto.descuento > 0}" class="text-decoration-line-through" 
+                                  th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></span>
+                            <span th:text="'$' + ${#numbers.formatDecimal(producto.precio * (1 - producto.descuento), 1, 2)}"></span>
+                            <div th:if="${producto.rating > 0}" class="text-warning mb-1">
+                                <i th:each="i : ${#numbers.sequence(1, producto.rating)}" class="fas fa-star"></i>
+                            </div>
+
+                        </div>
+
+                        <p class="lead" th:text="${producto.descripcion}"></p>
+                        <div class="d-flex">
+                            <input class="form-control text-center me-3" type="number" value="1" style="max-width: 3rem"/>
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                                <i class="bi-cart-fill me-1"></i>
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Section-->
+        <section class="py-5 bg-light">
+            <div class="container px-4 px-lg-5 mt-5">
+                <h2 class="fw-bolder mb-4">Productos relacionados</h2>
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div th:each="prodRel : ${productosRelacionados}" class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Badge Oferta -->
+                            <div th:if="${prodRel.enOferta}" 
+                                 class="badge bg-dark text-white position-absolute" 
+                                 style="top: 0.5rem; right: 0.5rem">
+                                Oferta
+                            </div>
+
+                            <!-- Imagen del Producto -->
+                            <img class="card-img-top" 
+                                 th:src="${prodRel.imagenUrl}" 
+                                 src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" 
+                                 alt="Imagen del producto"/>
+
+                            <!-- Detalles del Producto -->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Nombre -->
+                                    <h5 class="fw-bolder" th:text="${prodRel.nombre}">Nombre Producto</h5>
+
+                                    <!-- Rating -->
+                                    <div th:if="${prodRel.rating > 0}" 
+                                         class="d-flex justify-content-center small text-warning mb-2">
+                                        <i th:each="i : ${#numbers.sequence(1, prodRel.rating)}" 
+                                           class="fas fa-star"></i>
+                                    </div>
+
+                                    <!-- Precio -->
+                                    <div th:if="${prodRel.descuento > 0}">
+                                        <span class="text-muted text-decoration-line-through" 
+                                              th:text="'$' + ${#numbers.formatDecimal(prodRel.precio, 1, 2)}">
+                                        </span>
+                                        <span th:text="'$' + ${#numbers.formatDecimal(prodRel.precio * (1 - prodRel.descuento), 1, 2)}">
+                                        </span>
+                                    </div>
+                                    <div th:unless="${prodRel.descuento > 0}" 
+                                         th:text="'$' + ${#numbers.formatDecimal(prodRel.precio, 1, 2)}">
+                                        $00.00
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Acción -->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    <a th:if="${prodRel.tieneOpciones}" 
+                                       class="btn btn-outline-dark mt-auto" 
+                                       th:href="@{/item/{id}(id=${prodRel.idProducto})}">
+                                        Ver opciones
+                                    </a>
+                                    <a th:unless="${prodRel.tieneOpciones}" 
+                                       class="btn btn-outline-dark mt-auto" 
+                                       href="#">
+                                        Añadir al carrito
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Derechos reservador por el Grupo#4</p></div>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="utf-8" />
+        <title>Perfumes Shop</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" th:href="@{/}">Perfumes Shop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Sobre Nosotros</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#!">Todos los productos</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li><a class="dropdown-item" href="#!">Populares</a></li>
+                                <li><a class="dropdown-item" href="#!">Nuevos</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Carrito
+                            <span class="badge bg-dark text-white ms-1 rounded-pill" th:text="${cartCount}">0</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Elige tus perfumes favoritos</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">En esta tienda puedes elegir tu perfume favorito.</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sección de filtros -->
+        <div class="container mt-4">
+            <form method="get" action="#">
+                <div class="row g-3">
+                    <!-- Filtro por género -->
+                    <div class="col-md-4">
+                        <select class="form-select" name="genero">
+                            <option value="">Todos los géneros</option>
+                            <option th:each="gen : ${generos}"
+                                    th:value="${gen}"
+                                    th:text="${gen}"
+                                    th:selected="${gen == filtros.genero}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por marca -->
+                    <div class="col-md-4">
+                        <select class="form-select" name="marca">
+                            <option value="">Todas las marcas</option>
+                            <option th:each="marca : ${marcas}"
+                                    th:value="${marca.idMarca}"
+                                    th:text="${marca.nombre}"
+                                    th:selected="${marca.idMarca == filtros.marca}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por familia -->
+                    <div class="col-md-4">
+                        <select class="form-select" name="familia">
+                            <option value="">Todas las familias</option>
+                            <option th:each="familia : ${familias}"
+                                    th:value="${familia.idFamilia}"
+                                    th:text="${familia.nombre}"
+                                    th:selected="${familia.idFamilia == filtros.familia}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                        <a href="/" class="btn btn-secondary">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div th:each="producto : ${productos}" class="col mb-5">
+                        <div class="card h-100">
+                            <div th:if="${producto.enOferta}" class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Oferta</div>
+                            <img class="card-img-top" th:src="${producto.imagenUrl}" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg"/>
+
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <h5 class="fw-bolder" th:text="${producto.nombre}">Nombre</h5>
+                                    <div th:if="${producto.rating > 0}" class="d-flex justify-content-center small text-warning mb-2">
+                                        <i th:each="i : ${#numbers.sequence(1, producto.rating)}" class="fas fa-star"></i>
+                                    </div>
+                                    <div th:if="${producto.descuento > 0}">
+                                        <span class="text-muted text-decoration-line-through" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></span>
+                                        <span th:text="'$' + ${#numbers.formatDecimal(producto.precio * (1 - producto.descuento), 1, 2)}"></span>
+                                    </div>
+                                    <div th:unless="${producto.descuento > 0}" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2)}"></div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    <a th:if="${producto.tieneOpciones}" class="btn btn-outline-dark mt-auto" 
+                                       th:href="@{/item/{id}(id=${producto.idProducto})}">Ver opciones</a>
+                                    <a th:unless="${producto.tieneOpciones}" class="btn btn-outline-dark mt-auto" 
+                                       href="#">Añadir al carrito</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Derechos reservador por el Grupo#4</p></div>
+        </footer>
+
+    </body>
+</html>
