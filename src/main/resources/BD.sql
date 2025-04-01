@@ -5,6 +5,23 @@ DROP DATABASE IF EXISTS perfumesdb;
 CREATE DATABASE perfumesdb;
 USE perfumesdb;
 
+-- Tabla ListaDeseos
+CREATE TABLE IF NOT EXISTS lista_deseos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY
+);
+
+-- Tabla ItemListaDeseos
+CREATE TABLE IF NOT EXISTS item_lista_deseos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_producto BIGINT,
+    lista_deseos_id BIGINT,
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
+    FOREIGN KEY (lista_deseos_id) REFERENCES lista_deseos(id)
+);
+
+-- Crear lista de deseos inicial
+INSERT INTO lista_deseos (id) VALUES (1);
+
 -- Tabla Marcas
 CREATE TABLE IF NOT EXISTS marca (
     id_marca BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -35,6 +52,21 @@ CREATE TABLE IF NOT EXISTS producto (
     id_familia BIGINT,
     FOREIGN KEY (id_marca) REFERENCES marca(id_marca),
     FOREIGN KEY (id_familia) REFERENCES familia_olfativa(id_familia)
+);
+
+-- Tabla Carrito
+CREATE TABLE IF NOT EXISTS carrito (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY
+);
+
+-- Tabla ItemCarrito
+CREATE TABLE IF NOT EXISTS item_carrito (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_producto BIGINT,
+    cantidad INT,
+    carrito_id BIGINT,
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
+    FOREIGN KEY (carrito_id) REFERENCES carrito(id)
 );
 
 -- Insertar Marcas

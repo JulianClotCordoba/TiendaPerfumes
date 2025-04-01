@@ -38,10 +38,11 @@ public class ItemService {
     public List<Item> getItemsFiltrados(String genero, Long marcaId, Long familiaId) {
         return itemRepository.findAll().stream()
                 .filter(item
-                        -> (genero == null || item.getGenero().equalsIgnoreCase(genero))
-                && (marcaId == null || item.getMarca().getIdMarca().equals(marcaId))
-                && (familiaId == null || item.getFamiliaOlfativa().getIdFamilia().equals(familiaId))
-                )
+                        -> (genero == null || genero.isEmpty() || item.getGenero().equalsIgnoreCase(genero)))
+                .filter(item
+                        -> (marcaId == null || (item.getMarca() != null && item.getMarca().getIdMarca().equals(marcaId))))
+                .filter(item
+                        -> (familiaId == null || (item.getFamiliaOlfativa() != null && item.getFamiliaOlfativa().getIdFamilia().equals(familiaId))))
                 .collect(Collectors.toList());
     }
 

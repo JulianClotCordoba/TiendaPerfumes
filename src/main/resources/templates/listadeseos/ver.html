@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="utf-8" />
+        <title>Perfumes Shop</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+    <body>
+        <!-- Navegacion -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light p-5">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" th:href="@{/}"><b>Perfumes Shop</b></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Tienda</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Sobre Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Contacto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Iniciar</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">Registrarse</a></li>
+                    </ul>
+                    <form class="d-flex" th:action="@{/carrito}" method="get">
+                        <input type="hidden" name="carritoId" value="1"/>
+                        <button class="btn btn-outline-dark" type="submit">Carrito</button>
+                    </form>
+                    <form class="d-flex mx-4" th:action="@{/listadeseos}" method="get">
+                        <input type="hidden" name="listaId" value="1"/>
+                        <button class="btn btn-outline-dark" type="submit">Lista de deseos</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <section>
+            <div class="container mt-4">
+                <h1>Mi Lista de Deseos</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${listaDeseos.items}">
+                            <td>
+                                <a th:href="@{/item(id=${item.producto.idProducto})}" 
+                                   th:text="${item.producto.nombre}"></a>
+                            </td>
+                            <td th:text="${'$' + #numbers.formatDecimal(item.producto.precio, 1, 2)}"></td>
+                            <td>
+                                <form th:action="@{/listadeseos/eliminar}" method="post">
+                                    <input type="hidden" name="listaId" th:value="${listaDeseos.id}"/>
+                                    <input type="hidden" name="itemId" th:value="${item.id}"/>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{/}" class="btn btn-primary">Volver al inicio</a>
+            </div>
+        </section>
+        <!-- Footer -->
+        <footer class="py-5 bg-light fixed-bottom">
+            <div class="container">
+                <p class="m-0 text-center text-dark">Derechos reservados por el Grupo#4</p>
+            </div>
+        </footer>
+    </body>
+</html>
