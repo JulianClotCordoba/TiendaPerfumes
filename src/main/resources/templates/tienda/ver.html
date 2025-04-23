@@ -48,17 +48,6 @@
                 </div>
             </div>
         </nav>
-        <!-- Header -->
-        <header class="bg-warning py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">NUEVA COLECCION</h1>
-                    <p class="lead fw-normal text-white mb-0">ESCOGE LA COMODIDAD ANTES QUE EL ESTILO.</p>
-                    <a class="btn btn-success my-4" th:href="@{/tienda}">COMPRA YA!</a>
-                </div>
-            </div>
-        </header>
-
         <!-- Filtros y opciones de vista -->
         <div class="container mt-4">
             <!-- Fila con resultados y boton de vista -->
@@ -82,7 +71,7 @@
                 </div>
             </div>
             <!-- Formulario de filtros -->
-            <form method="get" th:action="@{/}">
+            <form method="get" th:action="@{/tienda}">
                 <div class="row g-3">
                     <!-- Filtro por género -->
                     <div class="col-md-4">
@@ -281,3 +270,4 @@
                         </footer>
                         </body>
                         </html>
+

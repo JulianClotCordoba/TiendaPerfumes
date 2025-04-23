@@ -2,7 +2,6 @@ package com.perfumes.controller;
 
 import com.perfumes.domain.Carrito;
 import com.perfumes.domain.ListaDeseos;
-import com.perfumes.domain.Usuario;
 import com.perfumes.service.CarritoService;
 import com.perfumes.service.ItemService;
 import com.perfumes.service.ListaDeseosService;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class IndexController {
+public class TiendaController {
 
     @Autowired
     private ItemService itemService;
@@ -25,8 +24,8 @@ public class IndexController {
     @Autowired
     private ListaDeseosService listaDeseosService;
 
-    @GetMapping("/")
-    public String index(
+    @GetMapping("/tienda")
+    public String tienda(
             @RequestParam(required = false) String genero,
             @RequestParam(required = false) Long marca,
             @RequestParam(required = false) Long familia,
@@ -45,11 +44,10 @@ public class IndexController {
                 "marca", marca != null ? marca : "",
                 "familia", familia != null ? familia : ""
         ));
-        
         model.addAttribute("cartCount", carrito.getItems().size());
         model.addAttribute("wishlistCount", listaDeseos.getItems().size());
 
-        return "index";
+        return "tienda/ver";
     }
 
 }

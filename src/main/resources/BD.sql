@@ -1,5 +1,7 @@
 -- Eliminar base de datos si existe
 DROP DATABASE IF EXISTS perfumesdb;
+DROP TABLE IF EXISTS item_carrito;
+DROP TABLE IF EXISTS carrito;
 
 -- Crear base de datos
 CREATE DATABASE perfumesdb;
@@ -9,18 +11,6 @@ USE perfumesdb;
 CREATE TABLE IF NOT EXISTS lista_deseos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY
 );
-
--- Tabla ItemListaDeseos
-CREATE TABLE IF NOT EXISTS item_lista_deseos (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_producto BIGINT,
-    lista_deseos_id BIGINT,
-    FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
-    FOREIGN KEY (lista_deseos_id) REFERENCES lista_deseos(id)
-);
-
--- Crear lista de deseos inicial
-INSERT INTO lista_deseos (id) VALUES (1);
 
 -- Tabla Marcas
 CREATE TABLE IF NOT EXISTS marca (
@@ -54,20 +44,32 @@ CREATE TABLE IF NOT EXISTS producto (
     FOREIGN KEY (id_familia) REFERENCES familia_olfativa(id_familia)
 );
 
--- Tabla Carrito
-CREATE TABLE IF NOT EXISTS carrito (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY
+CREATE TABLE carrito (
+    id BIGINT PRIMARY KEY DEFAULT 1
 );
 
--- Tabla ItemCarrito
-CREATE TABLE IF NOT EXISTS item_carrito (
+INSERT INTO carrito (id) VALUES (1);
+
+CREATE TABLE item_carrito (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    carrito_id BIGINT,
     id_producto BIGINT,
     cantidad INT,
-    carrito_id BIGINT,
-    FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
-    FOREIGN KEY (carrito_id) REFERENCES carrito(id)
+    FOREIGN KEY (carrito_id) REFERENCES carrito(id),
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
+
+-- Tabla ItemListaDeseos
+CREATE TABLE IF NOT EXISTS item_lista_deseos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_producto BIGINT,
+    lista_deseos_id BIGINT,
+    FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
+    FOREIGN KEY (lista_deseos_id) REFERENCES lista_deseos(id)
+);
+
+-- Crear lista de deseos inicial
+INSERT INTO lista_deseos (id) VALUES (1);
 
 -- Insertar Marcas
 INSERT INTO marca (nombre, pais_origen) VALUES
@@ -132,3 +134,51 @@ SELECT
 FROM producto p
 LEFT JOIN marca m ON p.id_marca = m.id_marca
 LEFT JOIN familia_olfativa f ON p.id_familia = f.id_familia;
+
+CREATE TABLE usuario (
+    id_usuario BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    telefono VARCHAR(15),
+    password VARCHAR(255) NOT NULL,
+    activo BOOLEAN DEFAULT true
+);
+
+CREATE TABLE rol (
+    id_rol BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE TABLE usuario_rol (
+    id_usuario BIGINT,
+    id_rol BIGINT,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+INSERT INTO rol (nombre) VALUES ('USER'), ('ADMIN');
+
+-- Insertar admin con password 'admin123' encriptado
+INSERT INTO usuario (nombre, apellido, email, telefono, password, activo) VALUES (
+    'Admin',
+    'Sistema',
+    'admin@example.com',
+    "43252324",
+    '$2a$10$5vY2lC0UC3sp7EjVq42dE.HHkQ5qF7wOGDmE5vJhB6JgL8s5Q7Xb6',
+    true
+);
+
+-- Asignar rol ADMIN
+INSERT INTO usuario_rol (id_usuario, id_rol)
+SELECT u.id_usuario, r.id_rol 
+FROM usuario u, rol r 
+WHERE u.email = 'admin@example.com' AND r.nombre = 'ADMIN';
+
+SELECT * FROM usuario WHERE email = 'admin@example.com';
+SELECT * FROM usuario_rol WHERE id_usuario = (SELECT id_usuario FROM usuario WHERE email = 'admin@example.com');
+SELECT u.*, r.nombre as rol 
+FROM usuario u
+JOIN usuario_rol ur ON u.id_usuario = ur.id_usuario
+JOIN rol r ON ur.id_rol = r.id_rol
+WHERE u.email = 'admin@example.com';

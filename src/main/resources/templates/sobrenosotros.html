@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Sobre Nosotros</title>
+                <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+                <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+                <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+                <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+                <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+                <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+                </head>
+                <body class="bg-white">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light p-5">
+                        <div class="container px-4 px-lg-5">
+                            <a class="navbar-brand" th:href="@{/}"><b>Perfumes Shop</b></a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                                    <li class="nav-item"><a class="nav-link" aria-current="page" th:href="@{/}">Inicio</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/tienda}">Tienda</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/sobrenosotros}">Sobre Nosotros</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/contacto}">Contacto</a></li>
+                                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                                        <a class="nav-link" th:href="@{/admin}">Administrador</a>
+                                    </li>
+                                    <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Iniciar</a></li>
+                                    <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/registro/nuevo}">Registrarse</a></li>
+                                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                                        <form th:action="@{/logout}" method="post">
+                                            <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                                <form class="d-flex" th:action="@{/carrito}" method="get">
+                                    <input type="hidden" name="carritoId" value="1"/>
+                                    <button class="btn btn-outline-dark" type="submit">Carrito</button>
+                                </form>
+                                <form class="d-flex mx-4" th:action="@{/listadeseos}" method="get">
+                                    <input type="hidden" name="listaId" value="1"/>
+                                    <button class="btn btn-outline-dark" type="submit">Lista de deseos</button>
+                                </form>
+                            </div>
+                        </div>
+                    </nav>
+                    <section class="py-5">
+                        <div class="container">
+                            <div class="row align-items-center">
+
+                                <!-- Texto Izquierda -->
+                                <div class="col-lg-6">
+                                    <h6 class="text-uppercase text-secondary">Nuestra Empresa</h6>
+                                    <h1 class="display-4 fw-bold mb-3">Nosotros</h1>
+                                    <p class="text-muted mb-4">En Tienda Perfumes hemos dedicado años a curar una colección excepcional de fragancias que despiertan emociones, evocan recuerdos y resaltan tu personalidad. Desde aromas florales delicados y románticos, hasta esencias amaderadas intensas y exóticas, cada una de nuestras fragancias ha sido seleccionada con pasión y conocimiento profundo. Nuestro compromiso es ofrecerte un viaje sensorial inolvidable, respaldado por un servicio personalizado, atención experta y garantía de calidad en cada gota. Descubre el aroma perfecto que te acompañará en cada momento especial de tu vida.</p>
+                                    <a href="#contacto" class="btn btn-primary btn-lg">Contacto</a>
+                                </div>
+
+                                <!-- Imagen y Decoraciones -->
+                                <div class="col-lg-6 position-relative">
+                                    <!-- Círculo grande -->
+                                    <div class="position-absolute top-50 start-50 translate-middle rounded-circle bg-danger bg-opacity-10" style="width: 400px; height: 400px;"></div>
+                                    <!-- Círculo pequeño -->
+                                    <div class="position-absolute top-25 start-75 translate-middle rounded-circle bg-danger bg-opacity-10" style="width: 100px; height: 100px;"></div>
+                                    <!-- Imagen principal -->
+                                    <!--<img src="ruta/a/tu-imagen.png" class="img-fluid position-relative" alt="Equipo de compra">-->
+                                    <!-- Puntos decorativos -->
+                                    <div class="position-absolute" style="width: 12px; height: 12px; background-color: #6f42c1; top: 10%; left: 85%; border-radius: 50%;"></div>
+                                    <div class="position-absolute" style="width: 8px; height: 8px; background-color: #0d6efd; top: 30%; left: 20%; border-radius: 50%;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                    <section class="py-5 bg-light">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <h6 class="text-uppercase text-danger">Experiencia</h6>
+                                    <h3 class="fw-bold">Descripción</h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted">En nuestra tienda de perfumes, cada fragancia cuenta una historia. Ofrecemos una exclusiva selección de aromas nacionales e importados, diseñados para resaltar tu personalidad y acompañarte en cada momento especial. Desde notas florales y frescas hasta esencias intensas y seductoras, encontrarás el perfume perfecto para ti o para regalar. Déjate guiar por nuestros expertos y vive una experiencia sensorial única en un espacio pensado para despertar tus sentidos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-5">
+                        <div class="container">
+                            <div class="row text-center">
+                                <div class="col-6 col-md-3 mb-4">
+                                    <h2 class="display-6 fw-bold mb-1">15MIL</h2>
+                                    <p class="small text-muted">Clientes/día</p>
+                                </div>
+                                <div class="col-6 col-md-3 mb-4">
+                                    <h2 class="display-6 fw-bold mb-1">150MIL</h2>
+                                    <p class="small text-muted">Clientes/mes</p>
+                                </div>
+                                <div class="col-6 col-md-3 mb-4">
+                                    <h2 class="display-6 fw-bold mb-1">15</h2>
+                                    <p class="small text-muted">Países</p>
+                                </div>
+                                <div class="col-6 col-md-3 mb-4">
+                                    <h2 class="display-6 fw-bold mb-1">100+</h2>
+                                    <p class="small text-muted">Suscriptores</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <footer class="bg-light pt-4">
+                        <div class="container">
+                            <!-- Logo y Redes Sociales -->
+                            <div class="d-flex justify-content-between align-items-center pb-3">
+                                <div class="fw-bold fs-4">TiendaPerfumes</div>
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a>
+                                    <a href="#" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                                </div>
+                            </div>
+                            <hr>
+                                <div class="row py-4">
+                                    <!-- Info -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Info</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a th:href="@{/sobrenosotros}" class="text-muted text-decoration-none">Nosotros</a></li>
+                                            <li><a th:href="@{/}" class="text-muted text-decoration-none">Inicio</a></li>
+                                            <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Contacto</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Legal -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Legal</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a href="#" class="text-muted text-decoration-none">Términos</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Privacidad</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Seguridad</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Dependencias</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Mejoras -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Mejoras</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Chat en vivo</a></li>
+                                            <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Soporte</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Recursos -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Recursos</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a href="#" class="text-muted text-decoration-none">iOS y Android</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Mira el demo</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Clientes</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">API</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Suscribirse -->
+                                    <div class="col-12 col-md-4">
+                                        <h6 class="fw-semibold">Suscríbete</h6>
+                                        <form class="mt-2">
+                                            <div class="input-group">
+                                                <input type="email" class="form-control" placeholder="Email" aria-label="Email">
+                                                    <button class="btn btn-primary" type="submit">Suscribirse</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <hr class="mt-0">
+                                    <div class="text-center py-3">
+                                        <small class="text-muted">Todos los derechos están reservados</small>
+                                    </div>
+                                    </div>
+                                    </footer>
+                                    </body>
+                                    </html>

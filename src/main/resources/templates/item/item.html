@@ -23,12 +23,20 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Tienda</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Sobre Nosotros</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Contacto</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Iniciar</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Registrarse</a></li>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" th:href="@{/}">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/tienda}">Tienda</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/sobrenosotros}">Sobre Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/contacto}">Contacto</a></li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                            <a class="nav-link" th:href="@{/admin}">Administrador</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Iniciar</a></li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/registro/nuevo}">Registrarse</a></li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
+                            </form>
+                        </li>
                     </ul>
                     <form class="d-flex" th:action="@{/carrito}" method="get">
                         <input type="hidden" name="carritoId" value="1"/>
@@ -83,6 +91,90 @@
                 </div>
             </div>
         </section>
+
+        <!-- Sección de pestañas estática -->
+        <section class="py-5">
+            <div class="container">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs justify-content-center" id="infoTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active"
+                                id="tab-descripcion"
+                                data-bs-toggle="tab"
+                                data-bs-target="#descripcion"
+                                type="button"
+                                role="tab"
+                                aria-controls="descripcion"
+                                aria-selected="true">
+                            Descripción
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link"
+                                id="tab-comentarios"
+                                data-bs-toggle="tab"
+                                data-bs-target="#comentarios"
+                                type="button"
+                                role="tab"
+                                aria-controls="comentarios"
+                                aria-selected="false">
+                            Comentarios (0)
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content pt-4">
+                    <!-- Pestaña Descripción -->
+                    <div class="tab-pane fade show active" id="descripcion" role="tabpanel" aria-labelledby="tab-descripcion">
+                        <div class="row gx-4 gx-lg-5 align-items-start">
+                            <!-- Imagen -->
+                            <div class="col-md-4 text-center mb-4 mb-md-0">
+                                <img th:src="${producto.imagenUrl}" class="img-fluid rounded" alt="Imagen del producto">
+                            </div>
+                            <!-- Título y descripción -->
+                            <div class="col-md-4">
+                                <h2 class="fw-bolder" th:text="${producto.nombre}"></h2>
+                                <p class="text-muted" th:text="${producto.descripcion}"></p>
+                            </div>
+                            <!-- Enlaces -->
+                            <div class="col-md-4">
+                                <h4 class="fw-bolder">Enlaces del producto</h4>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-chevron-right me-2"></i>
+                                        <a href="#" class="text-decoration-none">Enlace #1</a>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-chevron-right me-2"></i>
+                                        <a href="#" class="text-decoration-none">Enlace #2</a>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-chevron-right me-2"></i>
+                                        <a href="#" class="text-decoration-none">Enlace #3</a>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chevron-right me-2"></i>
+                                        <a href="#" class="text-decoration-none">Enlace #4</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pestaña Comentarios -->
+                    <div class="tab-pane fade" id="comentarios" role="tabpanel" aria-labelledby="tab-comentarios">
+                        <div class="row">
+                            <div class="col text-center text-muted">
+                                No hay comentarios aún.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- Seccion de productos relacionados -->
         <section class="py-5 bg-light">
             <div class="container px-4 px-lg-5 mt-5">
@@ -96,7 +188,6 @@
                                  style="top: 0.5rem; right: 0.5rem">
                                 Oferta
                             </div>
-
                             <!-- Imagen del Producto -->
                             <img class="card-img-top" 
                                  th:src="${prodRel.imagenUrl}" 
@@ -152,10 +243,71 @@
             </div>
         </section>
         <!-- Footer-->
-        <footer class="py-5 bg-light">
+        <footer class="bg-light pt-4">
             <div class="container">
-                <p class="m-0 text-center text-dark">Derechos reservador por el Grupo#4</p>
-            </div>
-        </footer>
-    </body>
-</html>
+                <!-- Logo y Redes Sociales -->
+                <div class="d-flex justify-content-between align-items-center pb-3">
+                    <div class="fw-bold fs-4">TiendaPerfumes</div>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <hr>
+                    <div class="row py-4">
+                        <!-- Info -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Info</h6>
+                            <ul class="list-unstyled">
+                                <li><a th:href="@{/sobrenosotros}" class="text-muted text-decoration-none">Nosotros</a></li>
+                                <li><a th:href="@{/}" class="text-muted text-decoration-none">Inicio</a></li>
+                                <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Contacto</a></li>
+                            </ul>
+                        </div>
+                        <!-- Legal -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Legal</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">Términos</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Privacidad</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Seguridad</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Dependencias</a></li>
+                            </ul>
+                        </div>
+                        <!-- Mejoras -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Mejoras</h6>
+                            <ul class="list-unstyled">
+                                <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Chat en vivo</a></li>
+                                <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Soporte</a></li>
+                            </ul>
+                        </div>
+                        <!-- Recursos -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Recursos</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">iOS y Android</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Mira el demo</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Clientes</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">API</a></li>
+                            </ul>
+                        </div>
+                        <!-- Suscribirse -->
+                        <div class="col-12 col-md-4">
+                            <h6 class="fw-semibold">Suscríbete</h6>
+                            <form class="mt-2">
+                                <div class="input-group">
+                                    <input type="email" class="form-control" placeholder="Email" aria-label="Email">
+                                        <button class="btn btn-primary" type="submit">Suscribirse</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                        <div class="text-center py-3">
+                            <small class="text-muted">Todos los derechos están reservados</small>
+                        </div>
+                        </div>
+                        </footer>
+                        </body>
+                        </html>

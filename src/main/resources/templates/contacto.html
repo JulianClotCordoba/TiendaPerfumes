@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Sobre Nosotros</title>
+                <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+                <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+                <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+                <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+                <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+                <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+                </head>
+                <body class="bg-white">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light p-5">
+                        <div class="container px-4 px-lg-5">
+                            <a class="navbar-brand" th:href="@{/}"><b>Perfumes Shop</b></a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                                    <li class="nav-item"><a class="nav-link" aria-current="page" th:href="@{/}">Inicio</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/tienda}">Tienda</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/sobrenosotros}">Sobre Nosotros</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/contacto}">Contacto</a></li>
+                                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                                        <a class="nav-link" th:href="@{/admin}">Administrador</a>
+                                    </li>
+                                    <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Iniciar</a></li>
+                                    <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/registro/nuevo}">Registrarse</a></li>
+                                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                                        <form th:action="@{/logout}" method="post">
+                                            <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                                <form class="d-flex" th:action="@{/carrito}" method="get">
+                                    <input type="hidden" name="carritoId" value="1"/>
+                                    <button class="btn btn-outline-dark" type="submit">Carrito</button>
+                                </form>
+                                <form class="d-flex mx-4" th:action="@{/listadeseos}" method="get">
+                                    <input type="hidden" name="listaId" value="1"/>
+                                    <button class="btn btn-outline-dark" type="submit">Lista de deseos</button>
+                                </form>
+                            </div>
+                        </div>
+                    </nav>
+                    <section class="py-5">
+                        <div class="container">
+                            <div class="row align-items-center">
+
+                                <!-- Texto Izquierda -->
+                                <div class="col-lg-6 mb-4 mb-lg-0">
+                                    <h6 class="text-uppercase text-secondary">Contáctanos</h6>
+                                    <h2 class="display-5 fw-bold mb-3">Escríbenos para estar al día</h2>
+                                    <p class="text-muted mb-4">No dudes en escribirnos</p>
+                                    <p class="mb-1"><strong>Teléfono:</strong> +451 215 215</p>
+                                    <p class="mb-3"><strong>Correo:</strong> prueba@gmail.com</p>
+                                    <div class="d-flex gap-3">
+                                        <a href="#" class="text-dark fs-4"><i class="fab fa-twitter"></i></a>
+                                        <a href="#" class="text-dark fs-4"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="#" class="text-dark fs-4"><i class="fab fa-instagram"></i></a>
+                                        <a href="#" class="text-dark fs-4"><i class="fab fa-linkedin-in"></i></a>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 position-relative">
+                                    <div class="position-absolute top-50 start-50 translate-middle rounded-circle bg-danger bg-opacity-10" style="width: 400px; height: 400px;"></div>
+                                    <div class="position-absolute top-25 start-75 translate-middle rounded-circle bg-danger bg-opacity-10" style="width: 100px; height: 100px;"></div>
+                                    <!-- Puntos decorativos -->
+                                    <div class="position-absolute" style="width: 12px; height: 12px; background-color: #6f42c1; top: 15%; left: 80%; border-radius: 50%;"></div>
+                                    <!-- Imagen principal -->
+                                    <!--<img src="ruta/a/imagen-familia-tiendas.png" class="img-fluid position-relative" alt="Familia de compras">-->
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-5 bg-light">
+                        <div class="container text-center">
+                            <h6 class="text-secondary text-uppercase">Nuestra ubicación</h6>
+                            <h2 class="fw-bold mb-5">Ayudamos a las personas a sentirse mejor</h2>
+                            <div class="row gy-4">
+
+                                <div class="col-md-4">
+                                    <div class="p-4 rounded shadow-sm h-100">
+                                        <i class="fas fa-phone fa-2x text-primary mb-3"></i>
+                                        <p class="mb-1">prueba@gmail.com</p>
+                                        <p class="mb-2">prueba.prueba@gmail.com</p>
+                                        <p class="small text-muted mb-3">Recibe soporte</p>
+                                        <a href="#" class="btn btn-outline-primary btn-sm">Contactar</a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="p-4 rounded shadow-sm bg-dark text-white h-100">
+                                        <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+                                        <p class="mb-1">prueba@gmail.com</p>
+                                        <p class="mb-2">prueba.prueba@gmail.com</p>
+                                        <p class="small text-white-50 mb-3">Recibe soporte</p>
+                                        <a href="#" class="btn btn-outline-light btn-sm">Contactar</a>
+                                    </div>
+                                </div>
+
+                                <!-- Tarjeta Correo -->
+                                <div class="col-md-4">
+                                    <div class="p-4 rounded shadow-sm h-100">
+                                        <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
+                                        <p class="mb-1">prueba@gmail.com</p>
+                                        <p class="mb-2">prueba.prueba@gmail.com</p>
+                                        <p class="small text-muted mb-3">Recibe soporte</p>
+                                        <a href="#" class="btn btn-outline-primary btn-sm">Contactar</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-5 text-center">
+                        <div class="container">
+                            <p class="mb-2">Estamos ansiosos por hablar con vos</p>
+                            <h2 class="fw-bold mb-4">Hablemos!</h2>
+                            <a href="#" class="btn btn-primary btn-lg">Chat en vivo</a>
+                        </div>
+                    </section>
+
+                    <footer class="bg-light pt-4">
+                        <div class="container">
+                            <!-- Logo y Redes Sociales -->
+                            <div class="d-flex justify-content-between align-items-center pb-3">
+                                <div class="fw-bold fs-4">TiendaPerfumes</div>
+                                <div class="d-flex gap-3">
+                                    <a href="#" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a>
+                                    <a href="#" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                                </div>
+                            </div>
+                            <hr>
+                                <div class="row py-4">
+                                    <!-- Info -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Info</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a th:href="@{/sobrenosotros}" class="text-muted text-decoration-none">Nosotros</a></li>
+                                            <li><a th:href="@{/}" class="text-muted text-decoration-none">Inicio</a></li>
+                                            <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Contacto</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Legal -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Legal</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a href="#" class="text-muted text-decoration-none">Términos</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Privacidad</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Seguridad</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Dependencias</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Mejoras -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Mejoras</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Chat en vivo</a></li>
+                                            <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Soporte</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Recursos -->
+                                    <div class="col-6 col-md-2 mb-4">
+                                        <h6 class="fw-semibold">Recursos</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a href="#" class="text-muted text-decoration-none">iOS y Android</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Mira el demo</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">Clientes</a></li>
+                                            <li><a href="#" class="text-muted text-decoration-none">API</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- Suscribirse -->
+                                    <div class="col-12 col-md-4">
+                                        <h6 class="fw-semibold">Suscríbete</h6>
+                                        <form class="mt-2">
+                                            <div class="input-group">
+                                                <input type="email" class="form-control" placeholder="Email" aria-label="Email">
+                                                    <button class="btn btn-primary" type="submit">Suscribirse</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <hr class="mt-0">
+                                    <div class="text-center py-3">
+                                        <small class="text-muted">Todos los derechos están reservados</small>
+                                    </div>
+                                    </div>
+                                    </footer>
+                                    </body>
+                                    </html>

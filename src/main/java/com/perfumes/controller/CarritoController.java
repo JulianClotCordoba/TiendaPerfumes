@@ -20,17 +20,33 @@ public class CarritoController {
         return "carrito/ver";
     }
 
+    @GetMapping("/chequeo")
+    public String mostrarChequeo(@RequestParam Long carritoId, Model model) {
+        model.addAttribute("carrito", carritoService.obtenerCarrito(carritoId));
+        return "carrito/chequeo";
+    }
+
     @PostMapping("/agregar")
     public String agregarProducto(@RequestParam Long carritoId,
             @RequestParam Long productoId,
             @RequestParam int cantidad) {
-        Carrito carrito = carritoService.agregarProductoAlCarrito(carritoId, productoId, cantidad);
+        Carrito carrito = carritoService
+                .agregarProductoAlCarrito(carritoId, productoId, cantidad);
         return "redirect:/carrito?carritoId=" + carrito.getId();
     }
 
     @PostMapping("/eliminar")
-    public String eliminarProducto(@RequestParam Long carritoId, @RequestParam Long itemId) {
+    public String eliminarProducto(@RequestParam Long carritoId,
+            @RequestParam Long itemId) {
         carritoService.eliminarProductoDelCarrito(carritoId, itemId);
         return "redirect:/carrito?carritoId=" + carritoId;
+    }
+
+    @PostMapping("/checkout")
+    public String procesarCheckout(
+            @RequestParam Long carritoId,
+            Model model) {
+        // lógica de pago…
+        return "redirect:/pedido/confirmacion";
     }
 }

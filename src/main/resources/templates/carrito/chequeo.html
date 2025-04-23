@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <meta charset="utf-8" />
+        <title>Perfumes Shop – Checkout</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+        <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    </head>
+    <body>
+        <!-- NAV (idéntica a la de tus otras vistas) -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light p-5">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" th:href="@{/}"><b>Perfumes Shop</b></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link" aria-current="page" th:href="@{/}">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/tienda}">Tienda</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/sobrenosotros}">Sobre Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/contacto}">Contacto</a></li>
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                            <a class="nav-link" th:href="@{/admin}">Administrador</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/login}">Iniciar</a></li>
+                        <li class="nav-item" sec:authorize="!isAuthenticated()"><a class="nav-link" th:href="@{/registro/nuevo}">Registrarse</a></li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
+                            </form>
+                        </li>
+                    </ul>
+                    <form class="d-flex" th:action="@{/carrito}" method="get">
+                        <input type="hidden" name="carritoId" value="1"/>
+                        <button class="btn btn-outline-dark" type="submit">Carrito</button>
+                    </form>
+                    <form class="d-flex mx-4" th:action="@{/listadeseos}" method="get">
+                        <input type="hidden" name="listaId" value="1"/>
+                        <button class="btn btn-outline-dark" type="submit">Lista de deseos</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- SECTION: Checkout -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row gx-5">
+
+                    <!-- IZQUIERDA: Resumen de ítems -->
+                    <div class="col-lg-6">
+                        <h2 class="mb-4">Tu Pedido</h2>
+                        <div th:each="item : ${carrito.items}" class="mb-4 pb-4 border-bottom">
+
+                            <!-- Nombre + Punto de color -->
+                            <div class="d-flex align-items-center mb-2">
+                                <h5 class="me-2 mb-0"
+                                    th:text="${item.producto.nombre}">
+                                    Perfume #1
+                                </h5>
+                                <span class="rounded-circle"
+                                      style="width:12px; height:12px; background-color:#EA3F8B;">
+                                </span>
+                            </div>
+
+                            <!-- Rating (estrellas) y Comentarios (estático mientras no exista lista) -->
+                            <div class="text-warning small mb-2">
+                                <i th:each="i : ${#numbers.sequence(1, item.producto.rating)}"
+                                   class="fas fa-star"></i>
+                                <i th:each="i : ${#numbers.sequence(item.producto.rating + 1, 5)}"
+                                   class="far fa-star"></i>
+                                <span class="ms-2">0 Comentarios</span>
+                            </div>
+
+                            <!-- Precio -->
+                            <div class="h4 mb-1"
+                                 th:text="${ '$' + #numbers.formatDecimal(item.producto.precio, 1, 2) }">
+                                $1,139.33
+                            </div>
+
+                            <!-- Mini descripción -->
+                            <p class="text-muted mb-3"
+                               th:text="${item.producto.descripcion}">
+                                Mini descripción del producto
+                            </p>
+
+                            <!-- Iconos de acción -->
+                            <div class="d-flex gap-3">
+                                <button type="button" class="btn btn-light p-2">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button type="button" class="btn btn-light p-2">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                                <button type="button" class="btn btn-light p-2">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- DERECHA: Formulario de pago -->
+                    <div class="col-lg-6">
+                        <h2 class="mb-4">Información de Pago</h2>
+                        <form id="checkoutForm">
+                            <input type="hidden" name="carritoId" th:value="${carrito.id}" />
+                            <div class="row g-3">
+
+                                <!-- Nombre / Apellido -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control"
+                                           placeholder="Ej. Julian" name="nombre" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Apellido</label>
+                                    <input type="text" class="form-control"
+                                           placeholder="Ej. Ramirez" name="apellido"  required/>
+                                </div>
+
+                                <!-- Correo / Provincia -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Correo</label>
+                                    <input type="email" class="form-control"
+                                           placeholder="Ej. jramirez@gmail.com" name="correo" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Provincia</label>
+                                    <select class="form-select" name="provincia"  required>
+                                        <option selected>San Jose</option>
+                                        <option>Alajuela</option>
+                                        <option>Cartago</option>
+                                        <option>Heredia</option>
+                                    </select>
+                                </div>
+
+                                <!-- Dirección -->
+                                <div class="col-12">
+                                    <label class="form-label">Especificar dirección</label>
+                                    <textarea class="form-control" rows="3"
+                                              placeholder="Ej. Curridabat, Granadilla"
+                                              name="direccion" required></textarea>
+                                </div>
+
+                                <!-- Número de tarjeta / CVV -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Número de tarjeta</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"
+                                               placeholder="Número de tarjeta" name="numTarjeta"  required/>
+                                        <button class="btn btn-outline-secondary"
+                                                type="button">&times;</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"
+                                               placeholder="CVV" name="cvv"  required/>
+                                        <button class="btn btn-outline-secondary"
+                                                type="button">&times;</button>
+                                    </div>
+                                </div>
+
+                                <!-- Fecha de vencimiento -->
+                                <div class="col-12">
+                                    <label class="form-label">Fecha de vencimiento</label>
+                                    <select class="form-select" name="expiracion">
+                                        <option selected>MM/AA</option>
+                                        <option>01/25</option>
+                                        <option>02/25</option>
+                                    </select>
+                                </div>
+
+                                <!-- Botón Pagar -->
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary">Pagar</button>
+                                </div>
+
+                            </div>
+
+                            <!-- Resumen del total -->
+                            <div class="mt-4 text-end">
+                                <h4>Total:
+                                    <span th:text="${ '$' + #numbers.formatDecimal(carrito.calcularTotal(), 1, 2) }">
+                                        $0.00
+                                    </span>
+                                </h4>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Perfumes Shop</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ¡Compra realizada con éxito!
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-light pt-4">
+            <div class="container">
+                <!-- Logo y Redes Sociales -->
+                <div class="d-flex justify-content-between align-items-center pb-3">
+                    <div class="fw-bold fs-4">TiendaPerfumes</div>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-dark"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <hr>
+                    <div class="row py-4">
+                        <!-- Info -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Info</h6>
+                            <ul class="list-unstyled">
+                                <li><a th:href="@{/sobrenosotros}" class="text-muted text-decoration-none">Nosotros</a></li>
+                                <li><a th:href="@{/}" class="text-muted text-decoration-none">Inicio</a></li>
+                                <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Contacto</a></li>
+                            </ul>
+                        </div>
+                        <!-- Legal -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Legal</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">Términos</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Privacidad</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Seguridad</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Dependencias</a></li>
+                            </ul>
+                        </div>
+                        <!-- Mejoras -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Mejoras</h6>
+                            <ul class="list-unstyled">
+                                <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Chat en vivo</a></li>
+                                <li><a th:href="@{/contacto}" class="text-muted text-decoration-none">Soporte</a></li>
+                            </ul>
+                        </div>
+                        <!-- Recursos -->
+                        <div class="col-6 col-md-2 mb-4">
+                            <h6 class="fw-semibold">Recursos</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">iOS y Android</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Mira el demo</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">Clientes</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">API</a></li>
+                            </ul>
+                        </div>
+                        <!-- Suscribirse -->
+                        <div class="col-12 col-md-4">
+                            <h6 class="fw-semibold">Suscríbete</h6>
+                            <form class="mt-2">
+                                <div class="input-group">
+                                    <input type="email" class="form-control" placeholder="Email" aria-label="Email"/>
+                                    <button class="btn btn-primary" type="submit">Suscribirse</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                        <div class="text-center py-3">
+                            <small class="text-muted">Todos los derechos están reservados</small>
+                        </div>
+                        </div>
+                        </footer>
+                        <script>
+                            document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+                                e.preventDefault();
+                                const toastEl = document.getElementById('liveToast');
+                                const toast = new bootstrap.Toast(toastEl);
+                                toast.show();
+                                // Después de 1.5s continúa con el envío real
+                                setTimeout(() => e.target.submit(), 1500);
+                            });
+                        </script>
+                        </body>
+                        </html>
